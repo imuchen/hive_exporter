@@ -6,20 +6,18 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-func getTemperature(binary string) (float64, error) {
-	out, err := exec.Command(binary).Output()
-	if err != nil {
-		return 0, err
-	}
-	temperature, err := strconv.ParseFloat(string(out), 64)
-	if err != nil {
-		return 0, err
-	}
-	return temperature, nil
+func getTemperature(binary string) float64 {
+	out, _ := exec.Command(binary).Output()
+	outString := string(out)
+	tempString := strings.Split(outString, "\n")[0]
+	tempStringNumber := strings.Split(tempString, "=")[1]
+	temperature, _ := strconv.ParseFloat(tempStringNumber, 64)
+	return temperature
 }
 
 func main() {
@@ -34,7 +32,7 @@ func main() {
 			Name:      "temperature_deg_c",
 			Help:      "Temperature inside the bee hive, in degree Celsius.",
 		},
-		func() float64 { return float64(35.6) },
+		func() float64 { return getTemperature(binary) },
 	)); err != nil {
 		log.Fatal(err)
 	}
