@@ -4,8 +4,7 @@ COPY . $GOPATH/src/app
 WORKDIR $GOPATH/src/app
 RUN CGO_ENABLED=0 GOOS=linux go build -o app .
 
-FROM ubuntu:latest
+FROM alpine:latest
 WORKDIR /root/
 COPY --from=builder /go/src/app/app .
-COPY .toprc /root/
 CMD ["./app"]
