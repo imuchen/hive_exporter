@@ -1,0 +1,9 @@
+FROM golang:1.10-alpine as builder
+RUN mkdir -p $GOPATH/src/app
+COPY . $GOPATH/src/app
+WORKDIR $GOPATH/src/app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 go build -o app .
+
+FROM scratch
+COPY --from=builder /go/src/app/app /app
+CMD ["/app"]
