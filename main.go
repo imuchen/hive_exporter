@@ -55,7 +55,11 @@ func main() {
 		log.Fatal(err)
 	}
 	http.Handle("/metrics", prometheus.Handler())
-	if err := http.ListenAndServe(":3000", nil); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }
