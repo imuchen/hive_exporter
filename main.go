@@ -12,11 +12,19 @@ import (
 )
 
 func getTemperature(binary string) float64 {
-	out, _ := exec.Command(binary).Output()
+	out, err := exec.Command(binary).Output()
+	if err != nil {
+		log.Println(err)
+	}
 	outString := string(out)
+	log.Println(outString)
 	tempString := strings.Split(outString, "\n")[0]
+	log.Println(tempString)
 	tempStringNumber := strings.Split(tempString, "=")[1]
-	temperature, _ := strconv.ParseFloat(tempStringNumber, 64)
+	temperature, err := strconv.ParseFloat(tempStringNumber, 64)
+	if err != nil {
+		log.Println(err)
+	}
 	return temperature
 }
 
